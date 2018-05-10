@@ -1,0 +1,62 @@
+<!-- Markups for Customers -->
+
+<!-- Customer Detail -->
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title"><!-- customer name --></h3>
+  </div>
+  <div class="panel-body">
+    <ul class="list-group">
+      <li class="list-group-item">Phone: <!-- phone --></li>
+      <li class="list-group-item">Email: <!-- email --></li>
+      <li class="list-group-item">Privileged Customer?
+        <span><!-- privileged --></span>
+      </li>
+      <li class="list-group-item">You are eligible for 10% discount!</li>
+    </ul>
+  </div>
+</div>
+
+---------------------------------------------------------------------------
+<!-- Customer Form -->
+<div class="well well-lg">
+  <form>
+    <div class="form-group">
+      <label for="customerName">Name</label>
+      <input type="text" class="form-control" id="customerName" name="customerName">
+    </div>
+    <div class="form-group">
+      <label for="customerPhone">Phone</label>
+      <input type="text" class="form-control" id="customerPhone" name="customerPhone">
+    </div>
+    <div class="checkbox">
+      <label>
+        <input type="checkbox" name="isPrivileged" value="true"> Privileged Customer?
+      </label>
+    </div>
+    <button name="save" type="button" class="btn btn-success">
+      Save
+    </button>
+  </form>
+</div>
+
+---------------------------------------------------------------------------
+<!-- Customers -->
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12">
+      <h2>Store App</h2>
+      <hr>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-5">
+      <h3>Customer Form</h3>
+      <!-- Customer form comes here -->
+    </div>
+    <div class="col-xs-7">
+      <h3>Customers</h3>
+      <!-- Customer list comes here -->
+    </div>
+  </div>
+</div>
