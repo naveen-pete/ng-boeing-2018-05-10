@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { Product } from '../models/product';
 
 @Component({
@@ -31,4 +31,8 @@ export class ProductsComponent {
   ];
 
   constructor() {}
+
+  onProductCreated(product: Product) {
+    this.products.unshift(product);
+  }
 }
