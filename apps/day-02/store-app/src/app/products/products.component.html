@@ -1,26 +1,72 @@
-<h3>Products</h3>
+<!-- Products -->
+<div class="container">
+  <div class="row">
+    <div class="col-xs-12">
+      <h2>Products</h2>
+    </div>
+  </div>
 
-<!-- Product Detail -->
-<!-- Panel (Structure & Outline) -->
-<div class="panel panel-primary">
-  <div class="panel-heading">
-    <h3 class="panel-title">
-      {{ product.name | uppercase }}
-    </h3>
+  <div class="row">
+    <div class="col-sm-5">
+      <!-- Product Form -->
+      <div class="well well-lg">
+        <form>
+          <div class="form-group">
+            <label for="productName">Name</label>
+            <input type="text" class="form-control" id="productName" name="name">
+          </div>
+          <div class="form-group">
+            <label for="productDescription">Description</label>
+            <textarea class="form-control" id="productDescription" cols="30" rows="4" name="description">
+            </textarea>
+          </div>
+          <div class="form-group">
+            <label for="productPrice">Price</label>
+            <input type="text" class="form-control" id="productPrice" name="price">
+          </div>
+          <div class="checkbox">
+            <label>
+              <input type="checkbox" id="isAvailable" value="true" name="isAvailable"> Available
+            </label>
+          </div>
+          <button name="save" class="btn btn-primary">
+            Save
+          </button>
+        </form>
+      </div>
+      <div class="alert alert-success">
+        Product saved successfully!
+      </div>
+    </div>
+
+    <div class="col-sm-7">
+      <!-- Product List -->
+
+      <!-- Product Detail -->
+      <!-- Panel (Structure & Outline) -->
+      <div class="panel panel-primary" *ngFor="let product of products">
+        <div class="panel-heading">
+          <h3 class="panel-title">
+            {{ product.name | uppercase }}
+          </h3>
+        </div>
+        <div class="panel-body">
+          <p [ngStyle]="{ color: product.isAvailable ? 'limegreen' : 'orangered' }">
+            {{ product.description }}
+          </p>
+        </div>
+        <ul class="list-group">
+          <li class="list-group-item">
+            <span class="label" [ngClass]="product.isAvailable ? 'label-primary' : 'label-warning'">
+              {{ product.isAvailable ? 'Available':'Not Available' }}
+            </span>
+          </li>
+          <li class="list-group-item">
+            {{ product.price | currency : 'INR' }}
+          </li>
+        </ul>
+      </div>
+
+    </div>
   </div>
-  <div class="panel-body">
-    <p [ngStyle]="{ color: product.isAvailable ? 'limegreen' : 'orangered' }">
-      {{ product.description }}
-    </p>
-  </div>
-  <ul class="list-group">
-    <li class="list-group-item">
-      <span>
-        {{ product.isAvailable ? 'Available':'Not Available' }}
-      </span>
-    </li>
-    <li class="list-group-item">
-      {{ product.price | currency : 'INR' }}
-    </li>
-  </ul>
 </div>

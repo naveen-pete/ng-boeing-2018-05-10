@@ -6,15 +6,29 @@ import { Product } from '../models/product';
   templateUrl: './products.component.html'
 })
 export class ProductsComponent {
-  product: Product;
-
-  constructor() {
-    this.product = {
+  products: Product[] = [
+    {
       id: 1,
-      name: 'Honor 9 Lite',
-      description: 'Smart phone',
-      price: 20000,
+      name: 'iPhone 8',
+      description: 'Product from Apple',
+      price: 60000,
+      isAvailable: false
+    },
+    {
+      id: 2,
+      name: 'Samsung Galaxy S8',
+      description: 'Product from Samsung',
+      price: 50000,
       isAvailable: true
-    };
-  }
+    },
+    {
+      id: 3,
+      name: 'Moto G',
+      description: 'Product from Motorola',
+      price: 30000,
+      isAvailable: true
+    }
+  ];
+
+  constructor() {}
 }
