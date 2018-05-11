@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Product } from '../models/product';
+import { ProductsService } from '../services/products.service';
 
 @Component({
   selector: 'app-product-detail',
@@ -9,7 +10,11 @@ import { Product } from '../models/product';
 export class ProductDetailComponent implements OnInit {
   @Input() product: Product;
 
-  constructor() {}
+  constructor(private productsService: ProductsService) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.productsService.productCreated.subscribe((product: Product) => {
+      console.log('Received new product instance:', product);
+    });
+  }
 }
