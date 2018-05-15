@@ -1,12 +1,27 @@
+import $ from 'jquery';
+
 import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/from';
-import 'rxjs/add/operator/reduce';
-import 'rxjs/add/operator/scan';
+import 'rxjs/add/observable/fromevent';
+import 'rxjs/add/observable/interval';
+import 'rxjs/add/operator/switchmap';
 
-const numbers = [10, 15, 20, 25, 30];
+const btn = $('#sm');
+const btnEventStream = Observable.fromEvent(btn, 'click');
+const intervalStream = Observable.interval(1000);
 
-const stream = Observable.from(numbers).reduce((total, currentValue) => {
-  return total + currentValue;
-}, 0);
+let btnEventCount = 0;
 
-stream.subscribe(total => console.log('total:', total));
+// btnEventStream.subscribe(event => {
+//   ++btnEventCount;
+//   intervalStream.subscribe(v => {
+//     console.log(`btnEventCount: ${btnEventCount}, v: ${v}`);
+//   });
+// });
+
+btnEventStream
+  .switchMap(event => {
+    return intervalStream;
+  })
+  .subscribe(v => {
+    console.log(`v: ${v}`);
+  });
