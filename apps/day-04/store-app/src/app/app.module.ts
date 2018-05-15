@@ -11,6 +11,7 @@ import { ProductFormComponent } from './product-form/product-form.component';
 import { LoggerService } from './services/logger.service';
 import { ProductsService } from './services/products.service';
 import { SearchPipe } from './search.pipe';
+import { HighlightDirective } from './highlight.directive';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { SearchPipe } from './search.pipe';
     CustomersComponent,
     ProductDetailComponent,
     ProductFormComponent,
-    SearchPipe
+    SearchPipe,
+    HighlightDirective
   ],
   imports: [BrowserModule, FormsModule],
   providers: [LoggerService, ProductsService],

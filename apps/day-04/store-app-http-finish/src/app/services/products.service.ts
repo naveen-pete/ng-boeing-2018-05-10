@@ -1,10 +1,16 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpHeaders,
+  HttpParams,
+  HttpResponse
+} from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/catch';
-import 'rxjs/add/Observable/throw';
+import 'rxjs/add/observable/throw';
 
 import { Product } from '../models/product';
+import { AppError } from '../common/app-error';
 
 @Injectable()
 export class ProductsService {
@@ -13,15 +19,9 @@ export class ProductsService {
   constructor(private httpClient: HttpClient) {}
 
   getProducts(): Observable<Product[]> {
-    const headers = new HttpHeaders().append('auth', 'abcd123');
-    const params = new HttpParams().set('name', 'hari');
-    return this.httpClient.get<Product[]>(this.apiUrl, {
-      headers: headers,
-      params: params
+    return this.httpClient.get<Product[]>(this.apiUrl).catch(error => {
+      return Observable.throw(new AppError(error));
     });
-    // .catch(error => {
-    //   // return Observable.throw(Observable.from({ customError: error}))
-    // });
   }
 
   getProduct(id: number): Observable<Product> {

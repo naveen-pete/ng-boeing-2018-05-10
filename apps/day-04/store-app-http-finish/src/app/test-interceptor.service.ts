@@ -4,7 +4,8 @@ import {
   HttpEvent,
   HttpResponse,
   HttpRequest,
-  HttpHandler
+  HttpHandler,
+  HttpHeaders
 } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 
@@ -14,7 +15,10 @@ export class TestInterceptorService implements HttpInterceptor {
     req: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
-    console.log('request intercepted:', req);
-    return next.handle(req);
+    const newReq = req.clone({
+      headers: new HttpHeaders().set('auth', 'abc123')
+    });
+    console.log('request intercepted:', newReq);
+    return next.handle(newReq);
   }
 }

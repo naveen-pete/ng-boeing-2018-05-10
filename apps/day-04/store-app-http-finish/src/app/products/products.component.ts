@@ -18,10 +18,11 @@ export class ProductsComponent implements OnInit {
       products => {
         console.log('Get Products successful.');
         this.products = products;
-      },
-      error => {
-        console.log('Get Products failed. ', error);
       }
+      // },
+      // error => {
+      //   console.log('Get Products failed. ', error);
+      // }
     );
   }
 
