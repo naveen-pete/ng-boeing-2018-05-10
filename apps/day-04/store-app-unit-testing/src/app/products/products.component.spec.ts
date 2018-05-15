@@ -7,7 +7,7 @@ import 'rxjs/add/observable/from';
 import 'rxjs/add/observable/empty';
 import 'rxjs/add/observable/throw';
 
-describe('ProductsComponent', () => {
+xdescribe('ProductsComponent', () => {
   let component: ProductsComponent;
   let service: ProductsService;
 
@@ -42,11 +42,11 @@ describe('ProductsComponent', () => {
       }
     ];
 
-    spyOn(service, 'getProducts').and.callFake(() => {
-      return Observable.from([products]);
-    });
+    // spyOn(service, 'getProducts').and.callFake(() => {
+    //   return Observable.from([products]);
+    // });
 
-    // spyOn(service, 'getProducts').and.returnValue(Observable.from([products]));
+    spyOn(service, 'getProducts').and.returnValue(Observable.from([products]));
 
     // Act - Make the actual call
     component.ngOnInit();
@@ -67,7 +67,7 @@ describe('ProductsComponent', () => {
     expect(component.error.originalError).toEqual('server error');
   });
 
-  xit('should call the server to delete a product if the user confirms', () => {
+  it('should call the server to delete a product if the user confirms', () => {
     spyOn(window, 'confirm').and.returnValue(true);
     const spy = spyOn(service, 'deleteProduct').and.returnValue(
       Observable.empty()
@@ -79,7 +79,7 @@ describe('ProductsComponent', () => {
     expect(spy).toHaveBeenCalledWith(productId);
   });
 
-  xit('should NOT call the server to delete a product if the user cancels', () => {
+  it('should NOT call the server to delete a product if the user cancels', () => {
     spyOn(window, 'confirm').and.returnValue(false);
     const spy = spyOn(service, 'deleteProduct').and.returnValue(
       Observable.empty()
@@ -88,10 +88,10 @@ describe('ProductsComponent', () => {
     const productId = 1;
     component.onDelete(productId);
 
-    expect(spy).not.toHaveBeenCalledWith(productId);
+    expect(spy).not.toHaveBeenCalled();
   });
 
-  xit('should delete the product from the products array within the component', () => {
+  it('should delete the product from the products array within the component', () => {
     component.products = [
       {
         id: 1,

@@ -30,42 +30,39 @@ xdescribe('ProductFormComponent', () => {
     // service = fixture.debugElement.injector.get(ProductsService);
   });
 
-  it(
-    'should show product details for a particular product',
-    async(() => {
-      const product = {
-        id: 1,
-        name: 'iPhone 8',
-        description: 'Apple smart phone',
-        price: 70000,
-        isAvailable: true
-      };
+  it('should show product details for a particular product', async(() => {
+    const product = {
+      id: 1,
+      name: 'iPhone 8',
+      description: 'Apple smart phone',
+      price: 70000,
+      isAvailable: true
+    };
 
-      component.product = product;
+    component.product = product;
 
-      fixture.detectChanges();
+    fixture.detectChanges();
 
-      fixture.whenStable().then(() => {
-        const nameElement: HTMLInputElement = fixture.debugElement.query(
-          By.css('#productName')
-        ).nativeElement;
-        const descriptionElement: HTMLTextAreaElement = fixture.debugElement.query(
-          By.css('#productDescription')
-        ).nativeElement;
-        const isAvailableElement: HTMLInputElement = fixture.debugElement.query(
-          By.css('#productIsAvailable')
-        ).nativeElement;
-        const priceElement: HTMLInputElement = fixture.debugElement.query(
-          By.css('#productPrice')
-        ).nativeElement;
+    fixture.whenStable().then(() => {
+      const nameElement: HTMLInputElement = fixture.debugElement.query(
+        By.css('#productName')
+      ).nativeElement;
+      const descriptionElement: HTMLTextAreaElement = fixture.debugElement.query(
+        By.css('#productDescription')
+      ).nativeElement;
+      const isAvailableElement: HTMLInputElement = fixture.debugElement.query(
+        By.css('#productIsAvailable')
+      ).nativeElement;
+      const priceElement: HTMLInputElement = fixture.debugElement.query(
+        By.css('#productPrice')
+      ).nativeElement;
 
-        expect(nameElement.value).toContain(product.name);
-        expect(descriptionElement.value).toContain(product.description);
-        expect(isAvailableElement.checked).toBeTruthy();
-        expect(priceElement.value).toContain(product.price.toString());
-      });
-    })
-  );
+      expect(nameElement.value).toContain(product.name);
+      expect(descriptionElement.value).toContain(product.description);
+      expect(isAvailableElement.checked).toBeTruthy();
+      expect(priceElement.value).toContain(product.price.toString());
+    });
+  }));
 
   it('should save product details when form is submitted', () => {
     component.addNew = true;

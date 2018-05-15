@@ -55,7 +55,7 @@ xdescribe('ProductsComponent (async)', () => {
     service = TestBed.get(ProductsService);
   });
 
-  it('should set products property with the items returned from the server (Observable)', () => {
+  xit('should set products property with the items returned from the server (Observable)', () => {
     spyOn(service, 'getProducts').and.returnValue(
       Observable.from([testProducts])
     );
@@ -65,22 +65,19 @@ xdescribe('ProductsComponent (async)', () => {
     expect(component.products).toEqual(testProducts);
   });
 
-  xit(
-    'should set products property with the items returned from the server (Promise, async, whenStable)',
-    async(() => {
-      spyOn(service, 'getProductsPromise').and.returnValue(
-        Promise.resolve(testProducts)
-      );
+  xit('should set products property with the items returned from the server (Promise, async, whenStable)', async(() => {
+    spyOn(service, 'getProductsPromise').and.returnValue(
+      Promise.resolve(testProducts)
+    );
 
-      fixture.detectChanges();
+    fixture.detectChanges();
 
-      fixture
-        .whenStable()
-        .then(() => expect(component.products).toEqual(testProducts));
-    })
-  );
+    fixture
+      .whenStable()
+      .then(() => expect(component.products).toEqual(testProducts));
+  }));
 
-  xit(
+  it(
     'should set products property with the items returned from the server (Promise, fakeAsync, tick)',
     fakeAsync(() => {
       spyOn(service, 'getProductsPromise').and.returnValue(
