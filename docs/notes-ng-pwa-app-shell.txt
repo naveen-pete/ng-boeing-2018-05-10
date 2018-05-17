@@ -1,0 +1,101 @@
+The Angular App Shell
+---------------------
+- In order to measure the performance of the app, we can use Performance tab within developer console.
+
+- Before measuring performance, clear/unregister the service worker. This can be done by using 'Unregister' option within 'Service Workers' option of 'Application' tab 
+  - Open Developer Tools within Chrome
+  - Go to Application tab
+  - Select Service Workers option
+  - Click Unregister option
+  
+- Start profiling the app
+  - Go to Performance tab within Developer Tools
+  - Start profiling the app
+  - As soon as the page show some content, stop profiling
+  
+- Copy content of index.html into a temp html. Observe that it is a blank page. There is no significant content in it. 
+  - We are waiting for Angular to bootstrap itself
+  - Fetch data from the network and display the list
+  - Start rendering the skeleton of the page 
+
+- How can we improve the time to first render? The only way to improve is to serve more html in the initial request.
+  - We may have to add a complete menu
+  - We may have to add a loading indicator
+  - This is just to give some visual feedback to the user
+
+- The goal is to add more HTML to our initial index.html that gets served to the client's browser
+  - In order to do this we need to pre-render some of our main page content
+  - We need Angular Universal to do pre-rendering
+  
+  - We need to add Angular universal support to our app
+  - Go to command prompt
+  - Execute this command
+    ng generate universal ngu-app-shell
+
+  - This app is going to be used only at build time when we issue command
+    ng build --prod
+    
+  - Is used to pre-render some of our content and add the result directly to index.html which will contain more content
+  
+  - package.json
+    - new entry added - "@angular/platform-server": "^5.1.2"
+    
+  - run 'npm i' to install angular platform server dependency
+  
+  - angular-cli.json
+    - new entry added in "apps" array
+    
+    - note that there will not be any angular universal server present at runtime. This app will only be used at build time to pre-render a given route. The pre-rendered html and css content will be copied directly to our index.html
+    
+  - The ngu-app-shell angular universal app is a build time auxilliary concept that is used to pre-render some html content that will be added to index.html
+  
+  - Following new files are created:
+    - tsconfig.server.json
+    - main.server.ts
+    - app.server.module.ts
+    
+- Adding app shell to the app
+  - ng generate app-shell my-shell --universal-app=ngu-app-shell --route=app-shell-path
+  
+  - angular-cli.json
+      "appShell": {
+        "app": "ngu-app-shell",
+        "route": "app-shell-path"
+      }
+
+  - app.server.module.ts
+  
+    const routes: Routes = [ { path: 'app-shell-path', component: AppShellComponent }];
+    @NgModule({
+      imports: [
+        AppModule,
+        ServerModule,
+        RouterModule.forRoot(routes),
+      ],
+      bootstrap: [AppComponent],
+      declarations: [AppShellComponent],
+    })
+    export class AppServerModule {}
+
+  - app-shell.component.ts
+    - delete html template file
+    - delete css file
+
+    @Component({
+      selector: 'app-app-shell',
+      template: `<img class="loading-indicator" src="/assets/loading.gir">`,
+      styles: [
+        `
+        .loading-indicator {
+          height: 300px;
+          margin: 0 auto;
+        }
+      `
+      ]
+    })
+    export class AppShellComponent implements OnInit {
+      constructor() {}
+
+      ngOnInit() {}
+    }
+

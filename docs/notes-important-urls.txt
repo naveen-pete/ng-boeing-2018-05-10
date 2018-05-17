@@ -1,0 +1,22 @@
+Storing Auth Tokens in Cookies / Local Storage
+----------------------------------------------
+https://auth0.com/docs/security/store-tokens
+https://auth0.com/blog/cookies-vs-tokens-definitive-guide/
+
+Angular Cookie Service
+----------------------
+https://www.npmjs.com/package/ngx-cookie-service
+https://tutorialedge.net/typescript/angular/angular-cookies-tutorial/
+
+PWA Caching Strategies
+----------------------
+https://developers.google.com/web/fundamentals/instant-and-offline/offline-cookbook/
+
+Creating your first PWA
+-----------------------
+https://developers.google.com/web/fundamentals/codelabs/your-first-pwapp/
+
+GitHub URLs
+-----------
+https://github.com/naveen-pete/ng-boeing-2018-05-10
+https://github.com/angular-university/angular-pwa-course

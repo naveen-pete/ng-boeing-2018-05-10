@@ -1,0 +1,145 @@
+Angular PWA - Push Notifications
+--------------------------------
+- Implementing Subscription functionality
+  - Inject SwPush into the constructor
+  - In the Subscribe button click event handler,
+  
+  
+      this.swPush.requestSubscription({
+        serverPublicKey: "BE1A77ALwCqq04c4jgNG_7lPfqZi_MyAsSzcE5poP0Fwl_x9mVUQSQGFJyXqN9Mkt5-n336jll0nXuxoGlcxfGA"
+      });
+  
+  - The serverPublicKey is generated using web-push Node library. The key uniquely identifies our app server
+    npm i -g web-push
+    
+    web-push generate-vapid-keys --json
+    
+    vapid - Voluntary Application Server Identification
+    
+    Although it is not mandatory it is highly recommended that you create an unique identifier for your server in order to get the best chance of notifications to actually be displayed to the user
+    
+    With the VAPID key generated we are now ready to ask permission to the user for sending push notifications
+    
+  - Public key - Private key differences
+    Public key - Publicly available identifier of a given app server that can send push notifications
+                 This information is public and is available on users browser
+                 This key is used to request permission to the user to show notifications
+
+  readonly VAPID_PUBLIC_KEY = 'BE1A77ALwCqq04c4jgNG_7lPfqZi_MyAsSzcE5poP0Fwl_x9mVUQSQGFJyXqN9Mkt5-n336jll0nXuxoGlcxfGA';
+
+  subscribeToNotifications() {
+    this.swPush.requestSubscription({ serverPublicKey: this.VAPID_PUBLIC_KEY });
+  }
+
+    Private key - is used to generate notifications and send them to the user. Only someone in possession of the private key can create a notification and dispatch it to the user. Private key cannot be present on the client code. It should be kept private at the level of our server. Server dispatches the notifications to the user.
+    
+  - userVisibleOnly: true
+    means the web push messages that are sent using this subscription are guaranteed to always result in  
+    visible content shown to the user
+    
+  - endpoint - URL pointing to Google fire cloud messaging service at google apis.com. Last part of the url is an unique identifier. This id identifies the Chrome browser instance to the Google fire cloud messaging infrastructure, server in charge of pushing push notifications to all chrome browser instances. Web push messages do not come directly from our server. They arrive at the browser via a service that is under the control of the browser manufacturer. In case of Firefox thats going to be a different service. In general, each browser will have corresponding backend service that it uses to push notifications. It is not configurable by the developer. It cannot be changed and is defined by the browser. If we want to show a push notification to this browser instance, we have to send the message to this endpoint which clearly indentifies the browser instance. We add the text that we want to display. The backend service (Firebase cloud messaging service) will eventually push the notification to the browser instance. In order to be able to send notifications, we need to send this subscription object to our server. The server triggers notifications to the client.
+  
+  The subscription object is sent to the server. The server stores it for future use, typically in a database. We will use the newletter service
+  
+  lessons.component.ts
+  
+  subscribeToNotifications() {
+    this.swPush
+      .requestSubscription({ serverPublicKey: this.VAPID_PUBLIC_KEY })
+      .then(sub => {
+        console.log('Notification subscription:', sub);
+        this.newsletterService
+          .addPushSubscriber(sub)
+          .subscribe(
+            response =>
+              console.log('Sent push subscription object to the server.', response),
+            error => console.log('Could not send subscription object to server. Error:', error)
+          );
+      })
+      .catch(err => console.log('Could not subscribe to notifications.', err));
+  }
+
+  newsletter.service.ts
+
+    addPushSubscriber(sub: any) {
+      return this.http.post('/api/notifications', sub);
+    }
+  
+- How to display the allow or deny notifications popup again?
+  - Go to Chrome Settings
+  - Go to Advanced tab - Content Settings
+  - Choose Notifications
+  - localhost:8080 - Select Remove option
+  
+- Push notifications in Node - Server implementation with web-push
+  - We need both public key and private key that we generated before
+  - Generate vapid keys
+    web-push generate-vapid-keys --json
+    
+  - Copy public key into lessons.component.ts
+  - Copy public and private keys into server.js
+  
+  const vapidKeys = {
+    publicKey:
+      'BLiucPG1UpaRzzGzeGM3KxtDhedCjqGlvUKW9jq0VPilEmwglQC_LxUmYq6o9w9EyclCDdgVPxPypzHr6ieZwtE',
+    privateKey: '7Aprj2l3OytPnNG3oXbDYs_vnFe_2cYkrO3mL7KSWsY'
+  };
+  
+  - Configure public and private keys with the cloud messaging service. This dispatches the messages to client browser.
+  
+  webpush.setVapidDetails(
+    'mailto:example@yourdomain.org',
+    vapidKeys.publicKey,
+    vapidKeys.privateKey
+  );
+
+  - lessons.component.ts
+  
+  sendNewsletter() {
+    console.log('Sending Newsletter to all subscribers.');
+    this.newsletterService.send().subscribe();
+  }
+
+  - newsletter.service.ts
+  
+  send() {
+    return this.http.post('/api/newsletter', null);
+  }
+
+  - Server - send-newsletter-route.ts
+  
+  - Build the payload
+    const notificationPayload = {
+      notification: {
+        title: 'Angular News',
+        body: 'Newsletter Available!',
+        icon: 'assets/main-page-logo-small-hat.png',
+        vibrate: [100, 50, 100],
+        data: {
+          dateOfArrival: Date.now(),
+          primaryKey: 1
+        },
+        actions: [
+          {
+            action: 'explore',
+            title: 'Go to the site'
+          }
+        ]
+      }
+    };
+
+  - Send payload to all client subscriptions, iterate thru subscriptions array
+    Promise.all(
+      USER_SUBSCRIPTIONS.map(sub =>
+        webpush.send(sub, JSON.stringify(notificationPayload))
+      )
+    )
+      .then(() =>
+        res.status(200).json({ message: 'Newsletter sent successfully.' })
+      )
+      .catch(err => {
+        console.error('Error sending notification, reason:', err);
+        res.sendStatus(500);
+      });
+
+- View Web Push Notifications

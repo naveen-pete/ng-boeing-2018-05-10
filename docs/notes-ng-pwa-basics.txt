@@ -1,0 +1,142 @@
+Angular PWA Basics
+------------------
+
+How to convert an Angular app into PWA?
+---------------------------------------
+- Logical next step of the web
+- A standard web app with a native like capabilities
+
+- For a new app
+  ng new app-name --service-worker
+  
+- For an existing app, add @angular/service-worker package
+  npm i @angular/service-worker@5.x.x
+  
+- Change angular-cli.json configuration file to include 'serviceWorker' attribute
+  "apps": [
+    {
+      "serviceWorker": true
+    }
+  ]
+  
+- Include build configuration file for service worker - ngsw-config.json
+
+- This file will not be used at runtime. It is a build step config file
+
+- app.module.ts - Register service worker using following command
+
+  import { environment } from '../environments/environment.prod';
+  import { ServiceWorkerModule } from '@angular/service-worker';
+
+  @NgModule({
+    imports: [
+      ServiceWorkerModule.register('/ngsw-worker.js', {
+        enabled: environment.production
+      })
+    ]
+  })
+
+- Create production build by using this command:
+  ng build --prod
+  
+  This command creates a dist folder
+
+- Go into dist folder and serve the app using http-server
+  http-server -c-1 -P http://localhost:9000
+  
+  -c-1 - do not cache
+  -P - forward all unhandled requests to localhost:9000
+
+  (or) npm run start:prod
+
+- Visit the app by using http://localhost:8080
+  - Observe the app cache within Dev Console - Application - Cache - Cache Storage
+  - You should be able to see several entries
+  - Stop http-server
+  - Refresh the app in the browser - The shell should be shown, but data is not shown
+  
+- What is a Service Worker?
+  - Network level http interception proxy
+  - Is a JavaScript script, fetched from the server
+  - Used to run a HTTP proxy that is running in the browser between the app and the network
+  - It will serve many of the requests of the app
+  - It can cache bundles on Cache storage and serve them
+  - It can cache data on IndexDB 
+  - It can do anything that the network interception proxy can do
+  - It is running and intercepting HTTP requests even if we start the server again
+  - It does one of 2 things:
+    * Either it forwards the request to the network
+    * Or it is going to try to serve the request from somewhere else, for e.g., it can query some sort of database such as IndexDB or in this case cache storage and retrieve from there the information that it needs to respond to the request made by the main app.
+    
+- Cache storage - a key value cache that is reachable via JavaScript and is ideal for storing static assets, such as for e.g. bundles
+
+- Service worker will always run once installed and activated
+- We really need to fetch the data if there is no caching involved at the level of the data
+
+- When a new app version is deployed, we will have to refresh the app twice.
+  1. The first refresh will cause the detection of new service worker config file and initiate download of app files.
+  2. The second refresh will activate the new version of service worker and serve the app.
+
+- Detecting new version of app and notify the user to download the new version:
+
+  import { Component, OnInit } from '@angular/core';
+  import { SwPush, SwUpdate } from '@angular/service-worker';
+
+  @Component({
+    selector: 'app-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.css']
+  })
+  export class AppComponent implements OnInit {
+    constructor(private swUpdate: SwUpdate) {}
+
+    ngOnInit() {
+      if (this.swUpdate.isEnabled)
+        this.swUpdate.available.subscribe(() => {
+          if (confirm('New version available. Load new version?')) {
+            window.location.reload();
+          }
+        });
+      }
+    }
+  }
+  
+- Angular Service Worker Kill switch
+  - The service worker does a lot of caching
+  - The network is being bypassed and the server is not serving these HTTP requests
+  - This is great for performance
+  - The app will start up faster and the server will get less requests.
+  - Sometimes we may need to turn off the service worker and have our app work again as a normal web app where as usual all the requests are hitting the server
+  
+  To enable kill switch, turn off the service worker flag in angular-cli.json
+  
+  "apps": [
+    {
+      "serviceWorker": false
+    }
+  ]
+  
+- App Manifest - manifest.json - Making a PWA One-Click Installable
+-------------------------------------------------------------------
+  - Makes our app one click installable in order for the user to be able to add out app either to his phone home screen or to his desktop
+  
+  - dir: "ltr" - direction of text - left to right
+  - dir: "rtl" - direction of text - right to left
+  
+  - name: "app-name"
+  - short_name: "app-short-name" - displayed below the icon on home screen
+  
+  - start_url: "http://localhost:8080" - start url for the app, the browser opens up in full screen mode, no address bar
+  
+  - orientation: "any" - landscape or portrait
+  
+  - background_color: "transparent" - color that is shown when the app gets started
+  
+  - icons: [] - contains references to icons in different format, depending on the OS where the app is getting installed
+  
+  - Use online generator to generate icons for the app - www.favicon-generator.org
+  
+  - Configure angular-cli.json to include manifest.json in the build. Add manifest.json to "assets" array.
+  
+  - Include <link> tag in index.html that points to manifest.json
+    <link rel="manifest" href="manifest.json">

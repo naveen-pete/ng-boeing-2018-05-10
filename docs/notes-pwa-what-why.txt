@@ -1,0 +1,135 @@
+PWA
+---
+Set of features or technologies that you can add to your existing web apps to turn them into native mobile app like experiences using device features like the camera and providing offline access
+
+What are PWAs?
+--------------
+A term refering to a couple of features you can add to any web app to enhance it. You progressively enhance your existing web pages to look, feel and work more like native mobile apps
+- Its not about responsive design
+- Offline functionality
+- Icon on the home screen
+- Access camera or location
+- Data sync in the background
+
+PWA should be
+-------------
+Reliable - Load fast and provide offline functionality
+Fast - Respond quickly to user actions
+Engaging - Feel like a native app on mobile devices (thru features like push notifications)
+
+Mobile Web vs Native Apps
+-------------------------
+comScore Mobile Metrix
+
+An average smart phone user spends
+- 87% of the time in Native Apps
+- 13% of the time go into the Mobile Web
+
+Reasons:
+1. Push notifications - bring back into the app
+2. Home screen icons make access easy
+3. Access native device features like camera
+4. Possibly work offline
+
+Issues with Native apps
+1. Learn 2 languages
+2. 80% of the time is spent on Top 3 apps on the device
+   for e.g. Facebook, WhatsApp, etc
+3. No. of new apps installed by an average user per month - ZERO
+   Typically installed if you buy a new phone, later rarely installed.
+   
+Reach of Native Apps vs Mobile Web
+Native apps - 3.3 million users
+Web apps - 8.9 million users
+
+------------------------------------------------------------------------------
+                       Capability                  Reach
+------------------------------------------------------------------------------					   
+Native Apps          - Access device features      Top 3 apps win, rest lose
+                       Leverage OS
+------------------------------------------------------------------------------
+Traditional Web Apps - Highly limited device       High reach, no borders
+                       feature access
+------------------------------------------------------------------------------
+Progressive Web Apps - Access device features      High reach, no borders
+                       Leverage OS
+------------------------------------------------------------------------------
+
+PWA Core Building Blocks
+------------------------
+Service Workers
+- Supported in modern browsers like Chrome
+- JS running in a background process even if the app is closed
+- Offer allow caching / offline support
+- Enable other PWA features
+    - Background sync - sending request once internet connection is established
+	- Web Push - running in the background independent of the currently running tab
+	
+App Manifest
+- Makes your app installable on home screens
+- Not thru app store
+
+Responsive Design
+- App / layout should work and look good across Devices
+
+Geolocation API
+- Access user location
+
+Media API
+- Access device camera and microphone
+
+Comparing PWAs and SPAs
+SPA
+- Powered by JS
+- Highly reactive
+- Only one HTML file is sent to browser
+
+PWA
+- Uses a lot of JS (but SW is not controlled by any framework, it is independent of any app)
+- Aims to have high reactivity. Focus on the initial loading time, we want to get onto the screen fast, possibly by caching
+- Can work with multiple files
+
+Progressive Enhancements
+
+
+Web App Manifest
+----------------
+- One single file that we add to our web app
+- Makes our web app installable, makes our web app installable which means we can add it to the home screen of our mobile device it will feel and look like a native app.
+- Is a JSON file
+
+Browser Support
+- Supported by Chrome, Opera
+- In Development - MS Edge, Firefox, Webkit
+- http://caniuse.com/#feat=web-app-manifest
+
+Service Workers
+---------------
+- Do a lot of work behind the scenes
+- Allow us to make our app offline ready so that it works even if we dont have internet connection
+- Allow us to use many next generation web app features like push notifications and background sync
+
+- are JS files
+- have separate set of features
+- run on a separate single thread because they run in the background
+- decoupled from HTML pages, cannot access DOM
+- have certain scope, for e.g. the domain of the page
+- are background processes, they run in background
+
+- react to events
+- listen to events emitted by the application JS code, HTML code or another server
+
+Which events can SW listen to?
+-------------------------------
+Event                     Source   
+-----                     -------
+Fetch                     Browser or Page related JS initiates a Fetch (HTTP request)
+Push Notifications        Service Worker receives Web Push Notifications (from Server)
+Notification Interaction  User interacts with displayed notification
+Background Sync           Service Worker receives Background Sync Event, for e.g., 
+                          internet connection was restored
+Service Worker Lifecycle  Service Worker phase changes
+
+Browser Support
+is Service Worker ready?
+https://jakearchibald.github.io/isserviceworkerready/

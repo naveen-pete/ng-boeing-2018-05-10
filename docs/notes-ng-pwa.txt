@@ -1,0 +1,104 @@
+Angular PWA Basics
+------------------
+
+https://yourdomain.com
+
+Browser Tab 1      Browser Tab 2      Browser Tab 3
+
+
+                  Service Worker
+                  
+
+* All the tabs share the same service worker instance
+
+* Service worker instance intercepts the http requests that are made by any of the tabs of your app and it will either forward or not forward them to the network
+
+* It is essentially a middleware that is downloadable and installable
+
+* When it is running, it is scoped to your app, it cannot access other apps that are running in your browser
+
+* It is the key browser component that is going to allow us to give to our web app native like capabilities such as 
+  - download an installation
+  - background sync of data
+  - offline support
+  - notifications
+  
+* Service worker requires a registration script, generally named sw-register.js
+  - create sw-register.js at the same level as index.html
+  - include a reference for sw-register.js using <script> tag within index.html
+  
+* Test to see if the browser supports service worker. If it does not support service worker, our app should still work normally
+
+* Service workers and PWA in general is supposed to be used in an incremental way so if there is browser support for it then we can go ahead and add this capabilities to our app, otherwise everything should still work like in a normal web app
+
+* Service worker life-cycle
+  - key overall philosophy of service worker life-cycle is about ensuring consistency by default and making sure that the user always sees one version of the app even if it has multiple tabs of the app open.
+  
+  - service worker file is named sw.js
+  - it is put right next to registration script - sw-register.js
+  
+  - angular-cli.json 
+    - add sw.js and sw-register.js to "assets" array property
+    - This configuration is needed for the CLI to serve these files
+    
+  - When we refresh the page, the service worker remains active. The same instance of service worker will still be running across page refreshes. The browser will activate or deactivate the service worker at certain key events in order to spare resources especially on the mobile
+  
+* Service worker life-cycle
+  - Install and Activate phases of service worker lifecycle
+  
+self.addEventListener('install', () => {
+  log('version installed.');
+});
+
+self.addEventListener('activate', () => {
+  log('version activated.');
+});
+
+* The new version of service worker is installed but not activated until all the tabs referring to the app are closed.
+
+https://medium.com/@nsmirnova/creating-pwa-with-angular-5-e36ea2378b5d
+
+* Browser Cache API
+  - Caching mechanism that is accessible via JavaScript, unlike the traditional caching mechanism
+  - Can be programmatically invalidated and can be managed via JavaScript
+  - Can be used to store offline page the response to the request that we made here we are going to store it in this type of cache this way in another part of the sw we will be able to serve the offline page in response to a failed HTTP request.
+  
+  const cache = await caches.open('app-cache');
+  cache.put(request, response);
+  
+  Dev Console - Application - Cache - Cache Storage
+  
+  - Used to store multiple versions of our apps. We can store files like:
+    - index.html
+    - css bundles
+    - js bundles
+    
+* How to turn your App into a PWA
+  
+  ng new app-name --service-worker
+  
+  package.json
+  - dependencies - '@angular/service-worker' module is included
+  
+  angular-cli.json
+  "apps" : [{
+    "serviceWorker": true
+  }]
+  
+  ngsw-config.json will have to be added. This file contains sw configuration. It is a build-step config file
+  
+  https://youtu.be/C1Pji5XvXbE
+  
+  app.module 
+  - import { ServiceWorkerModule } from '@angular/service-worker';
+  - import { environment } from '../environments/environment';
+  - imports: [
+      environment.production ? ServiceWorkerModule.register('ngsw-worker.js') : []
+    ]
+    
+* Angular App Shell
+  - When we reload the app it still takes a while for the user to be able to see something on the screen. This is when the first paint occurs
+  - The blank page is shown because there is nothing to render and we are waiting for Angular to bootstrap itself, fetch some data from the network and finally display content, or at least to start rendering here the skeleton of the page including the header and that bootstrap process still takes a while.
+  
+  - The only way to improve this user experience and decrease the time to first meaningful render is to serve more initial HTML content to the user in the index.html so we no longer can serve only here an empty page with this loading message, we need to add here the html and css for the top menu and a loading indicator to show something to the user as soon as the index.html file arrives at the browser
+  - 
